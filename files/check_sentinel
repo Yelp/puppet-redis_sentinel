@@ -110,7 +110,7 @@ optparse.parse!
 
 begin
   redis = TinyRedis.new(options[:host], options[:port])
-  info  = redis.info  p info
+  info  = redis.info
   add_state(:critical, "Redis instance is not configured as a sentinel", true)  unless info['sentinel_masters']
   add_state(:critical, "Sentinel has entered TILT mode", true) if info['sentinel_tilt'] != '0'
 

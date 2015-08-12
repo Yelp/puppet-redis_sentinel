@@ -167,7 +167,6 @@ begin
   add_state(:critical, "Master #{options[:master]} not found in sentinel", true)
 
   master_info = Hash[*master_raw]
-  p master_info
   sentinels   = redis.sentinel('sentinels', options[:master])
   slaves      = redis.sentinel('slaves', options[:master])
 
