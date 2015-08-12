@@ -164,7 +164,10 @@ end
 begin
   master_raw  = redis.sentinel('masters').
                   find{|info| info[1] == options[:master]}
-  add_state(:critical, "Master #{options[:master]} not found in sentinel", true)
+
+  if !master_raw
+    add_state(:critical, "Master #{options[:master]} not found in sentinel", true)
+  end
 
   master_info = Hash[*master_raw]
   sentinels   = redis.sentinel('sentinels', options[:master])
