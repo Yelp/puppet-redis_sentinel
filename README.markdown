@@ -1,7 +1,7 @@
 #redis\_sentinel
-[![Build Status](https://travis-ci.org/solarkennedy/puppet-redis_sentinel.png)](https://travis-ci.org/solarkennedy/puppet-redis\_sentinel)
+[![Build Status](https://travis-ci.org/Yelp/puppet-redis_sentinel.png)](https://travis-ci.org/Yelp/puppet-redis\_sentinel)
 
-# Warning 
+# Warning
 Only currently works on 2.6. Uses the [Old](http://redis.io/topics/sentinel-old)
 behavior. The newer sentinel in 2.8 writes its own config file, which I not yet
 know how to handle.
@@ -9,7 +9,7 @@ know how to handle.
 ##Overview
 
 This puppet module configures the [Redis Sentinel](http://redis.io/topics/sentinel)
-to do automatic master/slave control on a bunch of redis servers. (not to be 
+to do automatic master/slave control on a bunch of redis servers. (not to be
 confused with [Redis Cluster](http://redis.io/topics/cluster-spec).)
 
 ##Installation
@@ -50,6 +50,19 @@ redis_sentinel::monitor { $redis_servers:
   parallel_syncs          => size($redis_servers),
 }
 ```
+
+##Monitoring scripts
+
+Include `redis_sentinel::monitoring` to deploy 3 monitoring script
+into `/usr/local/bin` (change path by providing `$checks_path`).
+
+Checks included:
+
+* check\_sentinel
+* check\_sentinel\_master
+* check\_sentinel\_master\_health
+
+All checks are documents within their source files.
 
 ##Limitations
 
