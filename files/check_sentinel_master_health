@@ -170,8 +170,8 @@ begin
   end
 
   master_info = Hash[*master_raw]
-  sentinels   = redis.sentinel('sentinels', options[:master])
-  slaves      = redis.sentinel('slaves', options[:master])
+  sentinels   = redis.sentinel('sentinels', options[:master]) || []
+  slaves      = redis.sentinel('slaves', options[:master]) || []
 
   quorum        = master_info['quorum'].to_i
   num_slaves    = master_info['num-slaves'].to_i
