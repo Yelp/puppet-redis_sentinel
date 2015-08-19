@@ -126,6 +126,16 @@ def add_info(msg)
   $results.push(msg)
 end
 
+def add_crit_warn(value, info_m=nil, bad_m=nil, crit=nil, warn=nil)
+  if crit && value <= crit
+    add_state(:critical, bad_m % [value, crit+1])
+  elsif warn && value <= warn
+    add_state(:warning, bad_m % [value, warn+1])
+  elsif info_m
+    add_info(info_m)
+  end
+end
+
 def do_exit
   puts "#{$exit_status.to_s.upcase} - #{$results.join('. ')}"
   exit STATES[$exit_status]
@@ -155,8 +165,8 @@ unless options[:master]
   exit(1)
 end
 
-begin
-  redis = TinyRedis.new(options[:host], options[:port])
+redis = begin
+  TinyRedis.new(options[:host], options[:port])
 rescue RuntimeError => e
   add_state(:critical, e, true)
 end
@@ -207,33 +217,17 @@ begin
   slave_status    = "#{num_healthy_slaves}/#{num_slaves} slaves healthy"
   sentinel_status = "#{num_healthy_sentinels}/#{num_sentinels} sentinels healthy"
 
-  if options[:min_slaves_crit] != nil and num_slaves <= options[:min_slaves_crit]
-    add_state(:critical, "#{num_slaves} known slaves, expected at least #{options[:min_slaves_crit] + 1}")
-  elsif options[:min_slaves_warn] != nil and num_slaves <= options[:min_slaves_warn]
-    add_state(:warning, "#{num_slaves} known slaves, expected at least #{options[:min_slaves_warn] + 1}")
-  else
-    add_info(slave_status)
-  end
+  add_crit_warn(num_slaves, slave_status, "%s known slaves, expected at least %s",
+    options[:min_slaves_crit], options[:min_slaves_warn])
 
-  if options[:min_slaves_crit] != nil and num_healthy_slaves <= options[:min_slaves_crit]
-    add_state(:critical, "Expected at least #{options[:min_slaves_crit] + 1} healthy slaves")
-  elsif options[:min_slaves_warn] != nil and num_healthy_slaves <= options[:min_slaves_warn]
-    add_state(:warning, "Expected at least #{options[:min_slaves_warn] + 1} healthy slaves")
-  end
+  add_crit_warn(num_healthy_slaves, nil, "%s healthy slaves, expected at least %s",
+    options[:min_slaves_crit], options[:min_slaves_warn])
 
-  if options[:min_sentinels_crit] != nil and num_sentinels <= options[:min_sentinels_crit]
-    add_state(:critical, "#{num_sentinels} known sentinels, expected at least #{min_sentinels_crit + 1}")
-  elsif options[:min_sentinels_warn] != nil and num_sentinels <= options[:min_sentinels_warn]
-    add_state(:warning, "#{num_sentinels} known sentinels, expected at least #{min_sentinels_warn + 1}")
-  else
-    add_info(sentinel_status)
-  end
+  add_crit_warn(num_sentinels, sentinel_status, "%s known sentinels, expected at least %s",
+    options[:min_sentinels_crit], options[:min_sentinels_warn])
 
-  if options[:min_sentinels_crit] != nil and num_healthy_sentinels <= options[:min_sentinels_crit]
-    add_state(:critical, "Expected at least #{options[:min_sentinels_crit] + 1} healthy sentinels")
-  elsif options[:min_sentinels_warn] != nil and num_healthy_sentinels <= options[:min_sentinels_warn]
-    add_state(:warning, "Expected at least #{options[:min_sentinels_warn] + 1} healthy sentinels")
-  end
+  add_crit_warn(num_healthy_sentinels, nil, "%s healthy sentinels, expected at least %s",
+    options[:min_sentinels_crit], options[:min_sentinels_warn])
 
   if quorum == 0
     add_state(:critical, 'No quorum set')
