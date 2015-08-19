@@ -1,5 +1,5 @@
 name          'Yelp/redis_sentinel'
-version       '0.0.10'
+version       '0.0.11'
 source        'https://github.com/Yelp/puppet-redis_sentinel'
 author        'Kyle Anderson <kyle@xkyle.com>'
 license       'Apache License, Version 2.0'
