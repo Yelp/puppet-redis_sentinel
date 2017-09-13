@@ -4,7 +4,6 @@
 start on (local-filesystems and runlevel [2345])
 stop on runlevel [016]
 respawn
-expect fork
 limit nofile 20000 65000
 
 pre-start script
