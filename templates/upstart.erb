@@ -5,6 +5,7 @@ start on (local-filesystems and runlevel [2345])
 stop on runlevel [016]
 respawn
 limit nofile 20000 65000
+respawn limit unlimited
 
 pre-start script
 mkdir -p /var/run/redis
@@ -12,3 +13,5 @@ chown redis:redis /var/run/redis
 end script
 
 exec start-stop-daemon --start --chuid redis:redis --pidfile /var/run/redis/redis-sentinel.pid --umask 007 --exec /usr/bin/redis-server -- <%= scope.lookupvar('redis_sentinel::config_file') -%> --sentinel
+
+post-stop exec sleep 1
