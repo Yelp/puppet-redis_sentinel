@@ -7,5 +7,6 @@ summary       'Configure redis-sentinels'
 description   'Configure redis-sentinels'
 project_page  'https://github.com/Yelp/puppet-redis_sentinel'
 
-dependency 'puppetlabs/stdlib'
 dependency 'puppetlabs/concat'
+dependency 'puppetlabs/stdlib'
+dependency 'camptocamp/puppet-systemd'
