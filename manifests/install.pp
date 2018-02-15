@@ -1,4 +1,4 @@
-# == Class redis_sentinel::isntall
+# == Class redis_sentinel::install
 #
 class redis_sentinel::install {
 
