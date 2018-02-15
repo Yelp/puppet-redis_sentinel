@@ -12,8 +12,8 @@ Group=redis
 RuntimeDirectory=redis
 RuntimeDirectoryMode=0700
 
-ExecStart=/usr/local/bin/redis-server <%= scope.lookupvar('redis_sentinel::config_file') -%>
-ExecStop=/usr/local/bin/redis-cli shutdown
+ExecStart=/usr/bin/redis-server <%= scope.lookupvar('redis_sentinel::config_file') -%>
+ExecStop=/usr/bin/redis-cli shutdown
 Restart=always
 
 [Install]
