@@ -2,7 +2,7 @@
 #
 class redis_sentinel::install {
 
-  if $facts['systemd'] == true {
+  if $facts['systemd'] {
     file { '/etc/systemd/system/redis-sentinel.service':
       ensure   => $redis_sentinel::ensure,
       mode     => '0555',
